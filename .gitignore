@@ -1,5 +1,6 @@
 # I don't want to push the code for fine-tuning right away.
 fineTuning101/my_special_model/
+fineTuning101/nepal_cricket_model
 fineTuning101/imdb.csv
 RAG101/.env
 RAG101/data/
