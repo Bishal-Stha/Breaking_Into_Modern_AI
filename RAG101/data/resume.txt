@@ -1,0 +1,36 @@
+Bishal Shrestha
+Itahari-18, Sunsari | bishalstha2063@gmail.com | 9767769707
+GitHub: https://github.com/Bishal-Stha | LinkedIn: https://www.linkedin.com/in/bishal-ml/
+
+OBJECTIVE
+Machine Learning Engineer with hands-on experience in Python, PyTorch, and Scikit-learn. Skilled in data preprocessing, model development, NLP, computer vision, and version control (Git/GitHub). Passionate about applying AI to solve complex problems and deliver scalable solutions.
+
+SKILLS
+Languages: Python, SQL
+Libraries/Frameworks: NumPy, Pandas, Scikit-learn, PyTorch, SpaCy, NLTK
+Tools: Git, GitHub, Jupyter, VS Code
+Areas: Machine Learning, Deep Learning, NLP, Data Analysis, Computer Vision
+
+PROJECTS
+Skin Cancer Detection (CNN, PyTorch, NumPy, Pandas): Built a convolutional neural network to classify skin lesions, achieving high accuracy.
+Sentiment Analysis (NLP, NLTK, Scikit-learn): Developed a sentiment classifier on text data with feature extraction and preprocessing.
+
+Customer Churn Prediction (Logistic Regression, Scikit-learn, Pandas): Predicted customer retention using classification algorithms with data preprocessing and model evaluation.
+Family Member Recognition (CNN, PyTorch): Designed an image recognition system to classify family members accurately.
+
+EDUCATION
+B.Sc. CSIT (Bachelor of Science in Computer Science and Information Technology)
+Tribhuvan University – Godawari College, Itahari, Sunsari
+Expected Graduation: 2085 BS
+
+CERTIFICATIONS
+Neural Networks and Deep Learning – Coursera (Andrew Ng)
+Supervised Machine Learning: Classification & Regression – Coursera (Andrew Ng)
+Introduction to Machine Learning – DataCamp
+Deep Learning with PyTorch – DataCamp
+Natural Language Processing with spaCy – DataCamp
+Data Manipulation with Pandas – DataCamp
+Intermediate SQL – DataCamp
+
+LEADERSHIP / EXTRA-CURRICULAR
+Treasurer, Godawari IT Club, Tribhuvan University – Godawari College: Managed club funds and coordinated events for IT students.
