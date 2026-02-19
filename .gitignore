@@ -1,7 +1,9 @@
 # I don't want to push the code for fine-tuning right away.
-fineTuning101
+fineTuning101/my_special_model/
+fineTuning101/imdb.csv
 RAG101/.env
-!fineTuning101/finetuning_gpt2_on_imdb.ipynb # main fine-tuning code.
-!fineTuning101/imdb.csv # data set onto which model is fine-tuned.
-!fineTuning101/useFTModel.py # function to run the model
-!fineTuning101/my_special_model/model.safetensors # fine-tuned model
+RAG101/data/
+fineTuning101/finetuning_gpt2_on_imdb.ipynb # main fine-tuning code.
+fineTuning101/useFTModel.py # function to run the model
+*.env
+__pycache__/
