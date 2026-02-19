@@ -1,10 +1,11 @@
 import os
+from dotenv import load_dotenv
 from llama_index.llms.openrouter import OpenRouter
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, Settings
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 
-# 1. SET YOUR OPENROUTER KEY
-os.environ["OPENROUTER_API_KEY"] = "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"
+# Load environment variables from .env file
+load_dotenv()
 
 def run_openrouter_rag():
     # 2. CONFIGURE THE MODEL
