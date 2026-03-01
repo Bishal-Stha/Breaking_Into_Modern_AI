@@ -12,7 +12,7 @@ st.title("AI Resume Match Analyzer")
 st.caption("Classical NLP-based resume evaluation")
 
 # ---------------- LOAD MODEL (CACHED) ----------------
-model_path = os.path.join(os.path.dirname(__file__), "models", "en_core_web_sm")
+model_path = os.path.join(os.path.dirname(__file__), "model", "en_core_web_sm")
 
 @st.cache_resource
 def load_model():
