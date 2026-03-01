@@ -3,6 +3,7 @@ import spacy
 import pdfplumber
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+import subprocess
 
 # ---------------- PAGE CONFIG ----------------
 st.set_page_config(page_title="ATS Resume Analyzer", layout="wide")
@@ -11,17 +12,20 @@ st.title("AI Resume Match Analyzer")
 st.caption("Classical NLP-based resume evaluation")
 
 # ---------------- LOAD MODEL (CACHED) ----------------
-import subprocess
+def ensure_model(model_name="en_core_web_sm"):
+    """Check if spaCy model is installed, if not download it."""
+    try:
+        spacy.load(model_name)
+    except OSError:
+        st.info(f"Downloading {model_name} model...")
+        subprocess.run(["python", "-m", "spacy", "download", model_name], check=True)
+
+# Ensure model exists before caching
+ensure_model("en_core_web_sm")
 
 @st.cache_resource
 def load_model():
-    import spacy
-    try:
-        return spacy.load("en_core_web_sm")
-    except OSError:
-        # Download model if missing
-        subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"])
-        return spacy.load("en_core_web_sm")
+    return spacy.load("en_core_web_sm")
 
 nlp = load_model()
 
