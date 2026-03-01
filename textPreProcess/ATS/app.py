@@ -13,7 +13,7 @@ st.caption("Classical NLP-based resume evaluation")
 # ---------------- LOAD MODEL (CACHED) ----------------
 @st.cache_resource
 def load_model():
-    return spacy.load("en_core_web_trf")
+    return spacy.load("en_core_web_sm")
 
 nlp = load_model()
 
