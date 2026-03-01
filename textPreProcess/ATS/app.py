@@ -11,9 +11,17 @@ st.title("AI Resume Match Analyzer")
 st.caption("Classical NLP-based resume evaluation")
 
 # ---------------- LOAD MODEL (CACHED) ----------------
+import subprocess
+
 @st.cache_resource
 def load_model():
-    return spacy.load("en_core_web_sm")
+    import spacy
+    try:
+        return spacy.load("en_core_web_sm")
+    except OSError:
+        # Download model if missing
+        subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"])
+        return spacy.load("en_core_web_sm")
 
 nlp = load_model()
 
