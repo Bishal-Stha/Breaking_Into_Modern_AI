@@ -9,7 +9,11 @@ fineTuning101/useFTModel.py # function to run the model
 *.env
 __pycache__/
 textPreProcess/Include
-textPreProcess/Lib
+textPreProcess/Lib/*
+!textPreProcess/Lib/site-packages/
+textPreProcess/Lib/site-packages/*
+!textPreProcess/Lib/site-packages/en_core_web_sm/
+!textPreProcess/Lib/site-packages/en_core_web_sm/**
 textPreProcess/Scripts
 textPreProcess/share
 *.cfg
