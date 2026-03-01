@@ -3,29 +3,16 @@ import spacy
 import pdfplumber
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-import subprocess
 
 # ---------------- PAGE CONFIG ----------------
 st.set_page_config(page_title="ATS Resume Analyzer", layout="wide")
-
 st.title("AI Resume Match Analyzer")
 st.caption("Classical NLP-based resume evaluation")
 
 # ---------------- LOAD MODEL (CACHED) ----------------
-def ensure_model(model_name="en_core_web_sm"):
-    """Check if spaCy model is installed, if not download it."""
-    try:
-        spacy.load(model_name)
-    except OSError:
-        st.info(f"Downloading {model_name} model...")
-        subprocess.run(["python", "-m", "spacy", "download", model_name], check=True)
-
-# Ensure model exists before caching
-ensure_model("en_core_web_sm")
-
 @st.cache_resource
 def load_model():
-    return spacy.load("en_core_web_sm")
+    return spacy.load("en_core_web_sm")  # safe on Streamlit Cloud
 
 nlp = load_model()
 
@@ -42,36 +29,28 @@ def extract_text_from_pdf(pdf_file):
 # ---------------- KEY PHRASE EXTRACTION ----------------
 def extract_key_phrases(doc):
     phrases = set()
-
     for chunk in doc.noun_chunks:
         cleaned = chunk.text.strip().lower()
-
         if (
             len(cleaned) > 2
             and not all(token.is_stop for token in chunk)
             and not any(token.pos_ == "PRON" for token in chunk)
         ):
             phrases.add(cleaned)
-
     return phrases
 
 # ---------------- ENTITY EXTRACTION ----------------
 def extract_entities(doc):
     entity_dict = {}
-
     for ent in doc.ents:
-        if ent.label_ not in entity_dict:
-            entity_dict[ent.label_] = set()
-        entity_dict[ent.label_].add(ent.text)
-
+        entity_dict.setdefault(ent.label_, set()).add(ent.text)
     return entity_dict
 
 # ---------------- SIMILARITY ----------------
 def compute_similarity(text1, text2):
     vectorizer = TfidfVectorizer(stop_words="english")
     tfidf = vectorizer.fit_transform([text1, text2])
-    score = cosine_similarity(tfidf[0:1], tfidf[1:2])[0][0]
-    return round(score * 100, 2)
+    return round(cosine_similarity(tfidf[0:1], tfidf[1:2])[0][0] * 100, 2)
 
 # ---------------- UI INPUT ----------------
 job_desc = st.text_area("Paste Job Description")
@@ -82,15 +61,12 @@ if st.button("Analyze"):
 
     if job_desc and resume_pdf:
 
-        # Show a spinner while processing
-        with st.spinner("Analyzing resume... This may take a few seconds."):
-            # Optional: small progress bar simulation
+        with st.spinner("Analyzing resume..."):
             progress_bar = st.progress(0)
-            
+
             resume_text = extract_text_from_pdf(resume_pdf)
             progress_bar.progress(20)
 
-            # Process text with NLP (this is the heavy part)
             resume_doc = nlp(resume_text)
             progress_bar.progress(50)
 
@@ -108,10 +84,9 @@ if st.button("Analyze"):
             entities = extract_entities(resume_doc)
             progress_bar.progress(100)
 
-        # Clear progress bar after completion
         progress_bar.empty()
-        
-        # ---------------- SUMMARY SECTION ----------------
+
+        # ---------------- SUMMARY ----------------
         st.markdown("## 📊 Match Summary")
         col1, col2, col3 = st.columns(3)
         col1.metric("Overall Match Score", f"{similarity_score}%")
@@ -122,7 +97,6 @@ if st.button("Analyze"):
 
         # ---------------- SKILL BREAKDOWN ----------------
         col1, col2 = st.columns(2)
-
         with col1:
             st.markdown("### ✅ Matching Skills")
             if matched:
@@ -130,7 +104,6 @@ if st.button("Analyze"):
                     st.markdown(f"- {skill.title()}")
             else:
                 st.info("No strong matches detected.")
-
         with col2:
             st.markdown("### ❌ Missing Skills")
             if missing:
@@ -143,7 +116,6 @@ if st.button("Analyze"):
 
         # ---------------- RESUME INSIGHTS ----------------
         st.markdown("### 📄 Resume Insights")
-
         if entities:
             for label, values in entities.items():
                 st.markdown(f"**{label}**")
