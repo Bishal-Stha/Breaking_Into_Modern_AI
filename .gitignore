@@ -8,3 +8,8 @@ fineTuning101/finetuning_gpt2_on_imdb.ipynb # main fine-tuning code.
 fineTuning101/useFTModel.py # function to run the model
 *.env
 __pycache__/
+textPreProcess/Include
+textPreProcess/Lib
+textPreProcess/Scripts
+textPreProcess/share
+*.cfg
