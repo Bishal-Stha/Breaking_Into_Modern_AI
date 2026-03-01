@@ -1,5 +1,6 @@
 import streamlit as st
 import spacy
+from spacy.cli import download # type: ignore
 import pdfplumber
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -9,10 +10,15 @@ st.set_page_config(page_title="ATS Resume Analyzer", layout="wide")
 st.title("AI Resume Match Analyzer")
 st.caption("Classical NLP-based resume evaluation")
 
-# ---------------- LOAD MODEL (CACHED) ----------------
+# ---------------- LOAD MODEL ----------------
 @st.cache_resource
 def load_model():
-    return spacy.load("en_core_web_sm")  # safe on Streamlit Cloud
+    try:
+        return spacy.load("en_core_web_sm")
+    except OSError:
+        st.info("Downloading en_core_web_sm model for the first run...")
+        download("en_core_web_sm")
+        return spacy.load("en_core_web_sm")
 
 nlp = load_model()
 

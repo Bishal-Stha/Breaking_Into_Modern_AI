@@ -1,5 +1,4 @@
 streamlit
-spacy[lookups]
+spacy
 pdfplumber
 scikit-learn
-en-core-web-sm
