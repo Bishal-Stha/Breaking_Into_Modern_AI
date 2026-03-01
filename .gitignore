@@ -13,3 +13,4 @@ textPreProcess/Lib
 textPreProcess/Scripts
 textPreProcess/share
 *.cfg
+.env
