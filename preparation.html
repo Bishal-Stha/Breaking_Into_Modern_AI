@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your 38-Day Exam Battle Plan</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 20px; padding: 30px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        h1 { text-align: center; color: #667eea; margin-bottom: 10px; font-size: 2.5em; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 30px; font-size: 1.1em; }
+        .countdown { text-align: center; font-size: 1.5em; color: #764ba2; margin-bottom: 20px; font-weight: bold; }
+        .phase-selector { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap; }
+        .phase-btn { padding: 12px 24px; border: 2px solid #667eea; background: white; color: #667eea; border-radius: 25px; cursor: pointer; font-size: 1em; font-weight: 600; transition: all 0.3s; }
+        .phase-btn.active { background: #667eea; color: white; }
+        .phase-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3); }
+        .day-navigation { display: flex; justify-content: center; align-items: center; gap: 20px; margin-bottom: 30px; }
+        .nav-btn { padding: 10px 20px; background: #764ba2; color: white; border: none; border-radius: 20px; cursor: pointer; font-size: 1em; }
+        .nav-btn:disabled { background: #ccc; cursor: not-allowed; }
+        #currentDayDisplay { font-size: 1.2em; font-weight: bold; color: #333; }
+        .progress-overview { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .subject-card { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 20px; border-radius: 15px; color: #333; text-align: center; }
+        .subject-name { font-size: 1.2em; font-weight: bold; margin-bottom: 10px; color: #667eea;}
+        .day-section { background: #f8f9fa; border-radius: 15px; padding: 25px; margin-bottom: 20px; display: none; }
+        .day-section.active { display: block; }
+        .day-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;}
+        .day-title { font-size: 1.5em; color: #667eea; font-weight: bold; }
+        .day-date { color: #666; font-size: 1.1em; }
+        .session { background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid #667eea; }
+        .session-header { font-weight: bold; color: #764ba2; margin-bottom: 10px; font-size: 1.1em; }
+        .task-list { list-style: none; }
+        .task-item { padding: 10px; margin: 5px 0; background: #f8f9fa; border-radius: 5px; display: flex; align-items: center; gap: 10px; transition: all 0.3s; }
+        .task-item:hover { background: #e9ecef; }
+        .task-checkbox { width: 20px; height: 20px; cursor: pointer; flex-shrink: 0; }
+        .task-item.completed { opacity: 0.6; text-decoration: line-through; }
+        .weak-areas { background: #fff3cd; border-left: 4px solid #ffc107; padding: 20px; border-radius: 10px; margin-top: 20px; }
+        .weak-area-title { font-weight: bold; color: #856404; margin-bottom: 10px; }
+        .weak-area-list { display: flex; flex-wrap: wrap; gap: 10px; }
+        .weak-tag { background: white; padding: 8px 15px; border-radius: 20px; font-size: 0.9em; color: #856404; cursor: pointer; border: 1px solid #ffc107; }
+        .weak-tag.flagged { background: #dc3545; color: white; border-color: #dc3545; }
+        .reset-btn { background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer; font-size: 1em; margin-top: 20px; }
+        .reset-btn:hover { background: #c82333; }
+        .anxiety-protocol { background: #d1ecf1; border-left: 4px solid #17a2b8; padding: 20px; border-radius: 10px; margin-top: 20px; }
+        .protocol-title { font-weight: bold; color: #0c5460; margin-bottom: 15px; font-size: 1.2em; }
+        .protocol-steps { list-style: decimal; padding-left: 20px; }
+        .protocol-steps li { margin: 10px 0; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Your 38-Day Exam Battle Plan</h1>
+        <p class="subtitle">A structured and manageable path to exam success.</p>
+
+        <div class="countdown" id="countdown"></div>
+
+        <div class="phase-selector">
+            <button id="btn-foundation" class="phase-btn active" onclick="showPhase('foundation')">Phase 1: Foundation (Day 1-24)</button>
+            <button id="btn-sprint" class="phase-btn" onclick="showPhase('sprint')">Phase 2: Exam Sprint (Day 25-38)</button>
+        </div>
+
+        <div class="day-navigation">
+            <button class="nav-btn" id="prevDayBtn" onclick="changeDay(-1)">❮ Previous Day</button>
+            <span id="currentDayDisplay"></span>
+            <button class="nav-btn" id="nextDayBtn" onclick="changeDay(1)">Next Day ❯</button>
+        </div>
+
+        <div id="dailyPlan"></div>
+
+        <div class="weak-areas">
+            <div class="weak-area-title">🚩 Flag Your Weak Topics (Click to mark as struggling)</div>
+            <div class="weak-area-list" id="weakAreas"></div>
+        </div>
+
+        <div class="anxiety-protocol">
+            <div class="protocol-title">🧠 Anxiety Kill-Switch Protocol</div>
+            <p style="color: #0c5460; margin-bottom: 15px;">When you feel "I should be studying X instead of Y" → Follow these steps:</p>
+            <ol class="protocol-steps">
+                <li><strong>STOP.</strong> Close everything. Stand up.</li>
+                <li><strong>Deep breath</strong> × 3. Inhale 4 seconds, hold 4, exhale 4.</li>
+                <li><strong>Open this tracker.</strong> What does the schedule say?</li>
+                <li><strong>Trust the system.</strong> Say out loud: "The system knows better than my anxiety."</li>
+                <li><strong>Start with 5 minutes.</strong> Just 5 minutes on what the schedule says. Momentum kills anxiety.</li>
+            </ol>
+        </div>
+
+        <button class="reset-btn" onclick="resetProgress()">Reset All Progress</button>
+    </div>
+
+    <script>
+        const exams = [
+            { name: "Data Structure and Algorithms", date: new Date(new Date().getFullYear(), 3, 12) }, // Assuming Chaitra 30 is April 12
+            { name: "Numerical Method", date: new Date(new Date().getFullYear(), 3, 16) }, // Baisakh 3
+            { name: "Computer Architecture", date: new Date(new Date().getFullYear(), 3, 20) }, // Baisakh 7
+            { name: "Computer Graphics", date: new Date(new Date().getFullYear(), 3, 23) }, // Baisakh 10
+            { name: "Statistics II", date: new Date(new Date().getFullYear(), 3, 26) }  // Baisakh 13
+        ];
+        
+        // Note: The dates are approximate conversions from B.S. to A.D. for the script to work.
+        // The day-by-day plan follows the B.S. calendar dates provided in the prompt.
+
+        function updateCountdown() {
+            const now = new Date();
+            let nextExam = null;
+            for(const exam of exams) {
+                if (exam.date > now) {
+                    nextExam = exam;
+                    break;
+                }
+            }
+
+            if(nextExam) {
+                const diff = nextExam.date - now;
+                const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+                document.getElementById('countdown').innerHTML = `⏰ ${days} day${days > 1 ? 's' : ''} until ${nextExam.name} Exam`;
+            } else {
+                 document.getElementById('countdown').innerHTML = "🎉 All exams are finished!";
+            }
+        }
+        
+        const plans = {
+            foundation: [
+                { day: 1, date: 'Chaitra 6', sessions: [
+                    { time: 'Morning (2 hrs)', subject: 'Numerical Method', tasks: ['Unit 1: Review Errors, Taylor\'s Theorem.', 'Start Solution of Nonlinear Equations: Bisection, Newton-Raphson methods.'] },
+                    { time: 'Afternoon (3 hrs)', subject: 'DSA', tasks: ['Unit 6: Theory of Sorting (Bubble, Selection, Insertion).', 'Implement Bubble Sort and Selection Sort in C.'] },
+                    { time: 'Evening (3 hrs)', subject: 'Review', tasks: ['Quickly revise concepts from NM and DSA.', 'Plan for Day 2.'] }
+                ]},
+                { day: 2, date: 'Chaitra 7', sessions: [
+                    { time: 'Morning (2 hrs)', subject: 'Computer Graphics', tasks: ['Unit 1: Intro to CG, Applications.', 'Unit 2: DDA and Bresenham\'s Line Drawing Algorithm theory.'] },
+                    { time: 'Afternoon (3 hrs)', subject: 'Statistics II', tasks: ['Unit 1: Sampling Distribution of mean and proportion.', 'Central Limit Theorem concepts and examples.'] },
+                    { time: 'Evening (3 hrs)', subject: 'Practice', tasks: ['Solve 2 numericals for DDA and Bresenham.', 'Solve 3 problems on sampling distribution.'] }
+                ]},
+                { day: 3, date: 'Chaitra 8', sessions: [
+                    { time: 'Morning (2 hrs)', subject: 'Computer Architecture', tasks: ['Unit 1: Data Representation (Complements, Floating Point).', 'Error Detection Codes.'] },
+                    { time: 'Afternoon (3 hrs)', subject: 'DSA', tasks: ['Unit 6: Merge, Quick, Heap Sort theory.', 'Implement Quick Sort. Analyze its complexity.'] },
+                    { time: 'Evening (2 hrs)', subject: 'Review', tasks: ['Revise Data Representation concepts.'] }
+                ]},
+                { day: 4, date: 'Chaitra 9', sessions: [
+                    { time: 'Morning (2 hrs)', subject: 'Numerical Method', tasks: ['Unit 2: Interpolation vs Extrapolation.', 'Lagrange\'s and Newton\'s Interpolation formulas.'] },
+                    { time: 'Afternoon (3 hrs)', subject: 'Computer Graphics', tasks: ['Unit 3: 2D Geometric Transformations (Translation, Rotation, Scaling).', 'Homogeneous Coordinates.'] },
+                    { time: 'Evening (3 hrs)', subject: 'Practice', tasks: ['Solve 3 problems on Interpolation.', 'Solve 3 problems on 2D Transformations.'] }
+                ]},
+                { day: 5, date: 'Chaitra 10', sessions: [
+                    { time: 'Morning (2 hrs)', subject: 'Statistics II', tasks: ['Unit 2: Hypothesis Testing fundamentals (Null/Alternative, errors, p-value).', 'One-sample tests for mean.'] },
+                    { time: 'Afternoon (3 hrs)', subject: 'Computer Architecture', tasks: ['Unit 2: Register Transfer and Microoperations.', 'Unit 3: Basic Computer Organization, Instruction Cycle.'] },
+                    { time: 'Evening (2 hrs)', subject: 'Review', tasks: ['Revise Hypothesis testing steps and microoperations.'] }
+                ]},
+                { day: 6, date: 'Chaitra 11', sessions: [
+                    { time: 'Morning (3 hrs)', subject: 'DSA', tasks: ['Unit 7: Searching (Sequential, Binary).', 'Unit 8: Hashing, Collision Resolution techniques.'] },
+                    { time: 'Afternoon (4 hrs)', subject: 'Weekly Review', tasks: ['Go through all topics covered in Day 1-5.', 'Identify and list weak points.'] },
+                    { time: 'Evening', subject: 'Rest', tasks: ['Relax.'] }
+                ]},
+                { day: 7, date: 'Chaitra 12', sessions: [ { time: 'Full Day', subject: 'Rest & Buffer', tasks: ['Complete any backlogs from the week.', 'Relax and recharge for the next week.'] } ]},
+                
+                // Week 2
+                { day: 8, date: 'Chaitra 13', sessions: [
+                    { time: 'Morning (2 hrs)', subject: 'Computer Architecture', tasks: ['Unit 4: Microprogrammed Control.', 'Unit 5: CPU components, RISC vs CISC.'] },
+                    { time: 'Afternoon (3 hrs)', subject: 'Numerical Method', tasks: ['Unit 3: Numerical Differentiation and Integration.', 'Trapezoidal and Simpson\'s 1/3 Rule.'] },
+                    { time: 'Evening (3 hrs)', subject: 'Practice', tasks: ['Solve 3 problems on Simpson\'s Rule.', 'Draw diagram for basic computer org.'] }
+                ]},
+                { day: 9, date: 'Chaitra 14', sessions: [
+                    { time: 'Morning (2 hrs)', subject: 'Computer Graphics', tasks: ['Unit 2: Mid-Point Circle Algorithm.', 'Unit 3: Clipping (Point, Cohen-Sutherland Line Clipping).'] },
+                    { time: 'Afternoon (3 hrs)', subject: 'Statistics II', tasks: ['Unit 2: Two-sample tests (independent, paired).', 'Unit 3: Non-parametric tests intro, Chi-square test.'] },
+                    { time: 'Evening (2 hrs)', subject: 'Practice', tasks: ['Solve 2 problems on Cohen-Sutherland.', 'Solve 2 problems on Chi-square test.'] }
+                ]},
+                { day: 10, date: 'Chaitra 15', sessions: [
+                    { time: 'Morning (3 hrs)', subject: 'DSA', tasks: ['Unit 8: Trees (Concepts, Traversals).', 'Binary Search Tree (Insertion, Deletion).'] },
+                    { time: 'Afternoon (3 hrs)', subject: 'Computer Architecture', tasks: ['Unit 6: Pipelining concepts, hazards.', 'Speedup Equation.'] },
+                    { time: 'Evening (2 hrs)', subject: 'Practice', tasks: ['Implement BST insertion.', 'Solve a numerical on pipeline performance.'] }
+                ]},
+                { day: 11, date: 'Chaitra 16', sessions: [
+                    { time: 'Morning (2 hrs)', subject: 'Numerical Method', tasks: ['Unit 4: Solving System of Linear Equations.', 'Gauss Elimination and Gauss-Jordan methods.'] },
+                    { time: 'Afternoon (3 hrs)', subject: 'Computer Graphics', tasks: ['Unit 4: 3D Transformations.', 'Unit 5: 3D Object Representation (Polygon surfaces, Bezier curves).'] },
+                    { time: 'Evening (3 hrs)', subject: 'Practice', tasks: ['Solve 2 systems of equations using Gauss Elimination.', 'Practice 3D rotation matrix.'] }
+                ]},
+                { day: 12, date: 'Chaitra 17', sessions: [
+                    { time: 'Morning (2 hrs)', subject: 'Statistics II', tasks: ['Unit 4: Multiple Correlation and Regression.', 'Hypothesis testing in multiple regression.'] },
+                    { time: 'Afternoon (3 hrs)', subject: 'Computer Architecture', tasks: ['Unit 7: Computer Arithmetic (Booth Multiplication).', 'Unit 8: I/O Organization.'] },
+                    { time: 'Evening (2 hrs)', subject: 'Practice', tasks: ['Solve one Booth\'s multiplication problem.'] }
+                ]},
+                { day: 13, date: 'Chaitra 18', sessions: [
+                    { time: 'Morning (3 hrs)', subject: 'DSA', tasks: ['Unit 8: Graphs (Representation, Traversal).', 'Shortest Path (Dijkstra\'s Algorithm).'] },
+                    { time: 'Afternoon (4 hrs)', subject: 'Weekly Review', tasks: ['Revise all topics from Day 8-12.', 'Flag any topics you are still struggling with.'] },
+                    { time: 'Evening', subject: 'Rest', tasks: ['Relax.'] }
+                ]},
+                { day: 14, date: 'Chaitra 19', sessions: [ { time: 'Full Day', subject: 'Rest & Buffer', tasks: ['Complete backlogs.', 'Take a full day off if you are on schedule.'] } ]},
+
+                // Week 3
+                { day: 15, date: 'Chaitra 20', sessions: [
+                    { time: 'Morning (2 hrs)', subject: 'Numerical Method', tasks: ['Unit 5: Solution of ODEs.', 'Euler\'s and Runge-Kutta (RK4) methods.'] },
+                    { time: 'Afternoon (3 hrs)', subject: 'Computer Architecture', tasks: ['Unit 9: Memory Organization (Hierarchy, Cache).', 'Cache Mapping techniques.'] },
+                    { time: 'Evening (3 hrs)', subject: 'Practice', tasks: ['Solve one problem using RK4 method.', 'Solve one problem on cache mapping.'] }
+                ]},
+                { day: 16, date: 'Chaitra 21', sessions: [
+                    { time: 'Morning (2 hrs)', subject: 'Computer Graphics', tasks: ['Unit 7: Visible Surface Detection (Z-buffer, Painter\'s).', 'Unit 8: Illumination Models (Phong, Gouraud).'] },
+                    { time: 'Afternoon (3 hrs)', subject: 'Statistics II', tasks: ['Unit 5: Design of Experiment (CRD, RBD, LSD).', 'ANOVA table concepts.'] },
+                    { time: 'Evening (2 hrs)', subject: 'Review', tasks: ['Differentiate between different rendering and illumination models.'] }
+                ]},
+                { day: 17, date: 'Chaitra 22', sessions: [
+                    { time: 'Morning (3 hrs)', subject: 'Past Paper Practice', tasks: ['Solve 2077 Past Paper for DSA.', 'Time yourself (3 hours).'] },
+                    { time: 'Afternoon (3 hrs)', subject: 'Past Paper Practice', tasks: ['Solve 2077 Past Paper for NM.', 'Time yourself (3 hours).'] },
+                    { time: 'Evening (2 hrs)', subject: 'Analysis', tasks: ['Review your answers, identify mistakes and gaps in knowledge.'] }
+                ]},
+                { day: 18, date: 'Chaitra 23', sessions: [
+                    { time: 'Morning (3 hrs)', subject: 'Computer Graphics', tasks: ['Liang-Barsky Line Clipping.', 'Unit 9: Virtual Reality basics.', 'Unit 10: OpenGL basics.'] },
+                    { time: 'Afternoon (3 hrs)', subject: 'Statistics II', tasks: ['Unit 6: Stochastic Processes, Markov Chains.', 'Queuing Systems (M/M/1).'] },
+                    { time: 'Evening (2 hrs)', subject: 'Practice', tasks: ['Solve one problem on Liang-Barsky.', 'Solve one problem on Markov Chain transition matrix.'] }
+                ]},
+                { day: 19, date: 'Chaitra 24', sessions: [
+                    { time: 'Morning (3 hrs)', subject: 'Past Paper Practice', tasks: ['Solve 2077 Past Paper for CA.', 'Time yourself (3 hours).'] },
+                    { time: 'Afternoon (3 hrs)', subject: 'Past Paper Practice', tasks: ['Solve 2077 Past Paper for CG.', 'Time yourself (3 hours).'] },
+                    { time: 'Evening (2 hrs)', subject: 'Analysis', tasks: ['Review answers, focus on diagrams for CA and algorithms for CG.'] }
+                ]},
+                { day: 20, date: 'Chaitra 25', sessions: [
+                    { time: 'Morning (3 hrs)', subject: 'Past Paper Practice', tasks: ['Solve 2077 Past Paper for Statistics II.'] },
+                    { time: 'Afternoon (4 hrs)', subject: 'Revision', tasks: ['Revise all formulas for NM and Statistics II.', 'Revise all algorithms for DSA and CG.', 'Revise all diagrams for CA.'] },
+                    { time: 'Evening', subject: 'Rest', tasks: ['Light revision if needed. Relax.'] }
+                ]},
+                { day: 21, date: 'Chaitra 26', sessions: [ { time: 'Full Day', subject: 'Rest & Buffer', tasks: ['Final catch-up day before the exam sprint.'] } ]},
+
+                // Final Sprint Prep
+                { day: 22, date: 'Chaitra 27', sessions: [
+                    { time: 'Full Day', subject: 'DSA Intensive Revision', tasks: ['Revise all Units of DSA.', 'Focus on implementing Sorting, Searching, Trees, and Graph algorithms from scratch.', 'Solve 20+ problems from various sources covering all topics.'] }
+                ]},
+                { day: 23, date: 'Chaitra 28', sessions: [
+                    { time: 'Full Day', subject: 'DSA Past Paper Marathon', tasks: ['Solve at least 2 full past papers for DSA under strict timed conditions.', 'Analyze every mistake.', 'Make a one-page summary of all algorithms and their complexities.'] }
+                ]},
+                { day: 24, date: 'Chaitra 29', sessions: [
+                    { time: 'Morning (3 hrs)', subject: 'DSA Final Touch', tasks: ['Go through your one-page summary.', 'Quickly review pseudocode for all major algorithms.'] },
+                    { time: 'Afternoon (3 hrs)', subject: 'NM Preview', tasks: ['Revise all formulas for Numerical Methods.', 'Don\'t solve, just review the methods.'] },
+                    { time: 'Evening', subject: 'Relax', tasks: ['Get a good night\'s sleep. Pack your bag for the exam.'] }
+                ]},
+            ],
+            sprint: [
+                { day: 25, date: 'Chaitra 30', sessions: [
+                    { time: 'Morning', subject: 'DSA Exam Prep', tasks: ['Lightly review your summary sheet.', 'Stay calm and confident.'] },
+                    { time: '12:00 - 3:00 PM', subject: 'EXAM DAY', tasks: ['Give your best in the DSA Exam!'] },
+                    { time: 'Evening', subject: 'Rest', tasks: ['Rest. Do not study today.'] }
+                ]},
+                { day: 26, date: 'Baisakh 1', sessions: [
+                    { time: 'Full Day', subject: 'Numerical Method Revision', tasks: ['Revise all 6 units thoroughly.', 'Focus on the methods for Nonlinear eq, Interpolation, Integration, and Linear eq.', 'Solve the 2077 past paper again without looking at the solution.'] }
+                ]},
+                { day: 27, date: 'Baisakh 2', sessions: [
+                    { time: 'Full Day', subject: 'NM Problem Solving', tasks: ['Solve numerical problems for every unit.', 'Focus on your flagged weak areas: Gauss Elimination, Newton-Raphson, Simpson\'s Rule, RK4 Method.', 'Create a formula sheet.'] }
+                ]},
+                { day: 28, date: 'Baisakh 3', sessions: [
+                    { time: 'Morning', subject: 'NM Exam Prep', tasks: ['Review your formula sheet.', 'Go through the steps of all major methods.'] },
+                    { time: '12:00 - 3:00 PM', subject: 'EXAM DAY', tasks: ['Give your best in the Numerical Method Exam!'] },
+                    { time: 'Evening', subject: 'Rest', tasks: ['Rest and recover.'] }
+                ]},
+                { day: 29, date: 'Baisakh 4', sessions: [
+                    { time: 'Full Day', subject: 'Computer Architecture Revision', tasks: ['Revise all 9 units.', 'Focus on Pipelining, Control Unit, and Memory Organization.', 'Practice drawing diagrams for Basic Computer Org and Instruction Cycle.'] }
+                ]},
+                { day: 30, date: 'Baisakh 5', sessions: [
+                    { time: 'Full Day', subject: 'CA Diagrams & Numericals', tasks: ['Practice Booth\'s algorithm.', 'Draw pipeline diagrams for given instructions.', 'Solve problems on cache mapping (direct, associative).', 'Solve the 2077 past paper.'] }
+                ]},
+                { day: 31, date: 'Baisakh 6', sessions: [
+                    { time: 'Full Day', subject: 'CA Final Review', tasks: ['Review all short/long questions from past papers.', 'Make sure you can differentiate between key concepts (e.g., hardwired vs microprogrammed control).'] }
+                ]},
+                { day: 32, date: 'Baisakh 7', sessions: [
+                    { time: 'Morning', subject: 'CA Exam Prep', tasks: ['Review key diagrams and definitions.'] },
+                    { time: '12:00 - 3:00 PM', subject: 'EXAM DAY', tasks: ['Give your best in the Computer Architecture Exam!'] },
+                    { time: 'Evening', subject: 'Rest', tasks: ['Take a break.'] }
+                ]},
+                { day: 33, date: 'Baisakh 8', sessions: [
+                    { time: 'Full Day', subject: 'Computer Graphics Revision', tasks: ['Revise all units.', 'Focus on algorithms: DDA, Bresenham, Cohen-Sutherland, Liang-Barsky.', 'Practice 2D and 3D transformation matrices.'] }
+                ]},
+                { day: 34, date: 'Baisakh 9', sessions: [
+                    { time: 'Full Day', subject: 'CG Algorithms & Numericals', tasks: ['Solve problems for all clipping and scan conversion algorithms.', 'Practice numericals on Bezier curves and projections.', 'Solve the 2077 past paper.'] }
+                ]},
+                { day: 35, date: 'Baisakh 10', sessions: [
+                    { time: 'Morning', subject: 'CG Exam Prep', tasks: ['Review all algorithms and their steps.'] },
+                    { time: '12:00 - 3:00 PM', subject: 'EXAM DAY', tasks: ['Give your best in the Computer Graphics Exam!'] },
+                    { time: 'Evening', subject: 'Rest', tasks: ['Relax.'] }
+                ]},
+                { day: 36, date: 'Baisakh 11', sessions: [
+                    { time: 'Full Day', subject: 'Statistics II Revision', tasks: ['Revise all units.', 'Focus on Hypothesis Testing (all types), Regression, and ANOVA.', 'Understand the conditions for applying each test.'] }
+                ]},
+                { day: 37, date: 'Baisakh 12', sessions: [
+                    { time: 'Full Day', subject: 'Stats II Problem Solving', tasks: ['Solve numerical problems from past papers.', 'Focus on interpreting the results (e.g., what does p-value < 0.05 mean in this context?).', 'Create a final formula and test-conditions sheet.'] }
+                ]},
+                 { day: 38, date: 'Baisakh 13', sessions: [
+                    { time: 'Morning', subject: 'Stats II Exam Prep', tasks: ['Review your formula and conditions sheet.'] },
+                    { time: '12:00 - 3:00 PM', subject: 'EXAM DAY', tasks: ['Give your best in the Statistics II Exam!'] },
+                    { time: 'Evening', subject: 'CELEBRATE!', tasks: ['Congratulations! Your exams are over.'] }
+                ]},
+            ]
+        };
+
+        const weakTopics = [
+            'Booth Multiplication', 'Pipelining Hazards', 'Cache Mapping', 'RISC vs CISC',
+            'Liang-Barsky Clipping', 'Bezier Curves', 'Phong Model', '3D Projections',
+            'Gaussian Elimination', 'Simpson Rule Derivation', 'RK4 Method', 'Lagrange Interpolation',
+            'Dijkstra Algorithm', 'AVL Rotations', 'Hash Collision Resolution', 'Heap Sort',
+            'ANOVA Tables', 'Multiple Regression', 'Markov Chains', 'Non-parametric Tests', 'Chi-square Test'
+        ];
+
+        let currentPhase = 'foundation';
+        let currentDayIndex = 0;
+
+        function renderDailyPlan() {
+            const container = document.getElementById('dailyPlan');
+            container.innerHTML = '';
+            const allPlans = [...plans.foundation, ...plans.sprint];
+
+            allPlans.forEach((day, index) => {
+                const dayId = `day_${index}`;
+                const daySection = document.createElement('div');
+                daySection.id = dayId;
+                daySection.className = 'day-section';
+                
+                let sessionsHTML = '';
+                day.sessions.forEach((session, sessionIdx) => {
+                    let tasksHTML = session.tasks.map((task, taskIdx) => {
+                        const taskId = `${dayId}_session${sessionIdx}_task${taskIdx}`;
+                        const completed = localStorage.getItem(taskId) === 'true';
+                        return `
+                            <li class="task-item ${completed ? 'completed' : ''}">
+                                <input type="checkbox" class="task-checkbox" id="${taskId}" ${completed ? 'checked' : ''} onchange="toggleTask('${taskId}')">
+                                <label for="${taskId}">${task}</label>
+                            </li>`;
+                    }).join('');
+
+                    sessionsHTML += `
+                        <div class="session">
+                            <div class="session-header">${session.subject} - ${session.time}</div>
+                            <ul class="task-list">${tasksHTML}</ul>
+                        </div>`;
+                });
+
+                daySection.innerHTML = `
+                    <div class="day-header">
+                        <div class="day-title">Day ${day.day}</div>
+                        <div class="day-date">${day.date}</div>
+                    </div>
+                    ${sessionsHTML}`;
+
+                container.appendChild(daySection);
+            });
+            
+            setInitialDay();
+        }
+
+        function setInitialDay() {
+            const today = new Date();
+            // This is a simple approximation. For real dates, a B.S. to A.D. library would be needed.
+            // Using March 20th as the start date (Day 1) as per your context.
+            const start = new Date(today.getFullYear(), 2, 20); 
+            const dayDiff = Math.floor((today - start) / (1000 * 60 * 60 * 24));
+            
+            currentDayIndex = 0;
+            if (dayDiff >= 0 && dayDiff < (plans.foundation.length + plans.sprint.length)) {
+                currentDayIndex = dayDiff;
+            }
+            showDay(currentDayIndex);
+        }
+
+        function showDay(index) {
+            document.querySelectorAll('.day-section').forEach(sec => sec.classList.remove('active'));
+            const dayToShow = document.getElementById(`day_${index}`);
+            if (dayToShow) {
+                dayToShow.classList.add('active');
+            }
+
+            const allPlans = [...plans.foundation, ...plans.sprint];
+            document.getElementById('currentDayDisplay').textContent = `Day ${allPlans[index].day} (${allPlans[index].date})`;
+
+            document.getElementById('prevDayBtn').disabled = index === 0;
+            document.getElementById('nextDayBtn').disabled = index === allPlans.length - 1;
+
+            // Automatically switch phase button
+            if (index < plans.foundation.length) {
+                document.getElementById('btn-foundation').classList.add('active');
+                document.getElementById('btn-sprint').classList.remove('active');
+            } else {
+                document.getElementById('btn-foundation').classList.remove('active');
+                document.getElementById('btn-sprint').classList.add('active');
+            }
+        }
+        
+        function changeDay(offset) {
+            const newIndex = currentDayIndex + offset;
+            const allPlans = [...plans.foundation, ...plans.sprint];
+            if (newIndex >= 0 && newIndex < allPlans.length) {
+                currentDayIndex = newIndex;
+                showDay(currentDayIndex);
+            }
+        }
+
+        function toggleTask(taskId) {
+            const checkbox = document.getElementById(taskId);
+            localStorage.setItem(taskId, checkbox.checked);
+            checkbox.parentElement.classList.toggle('completed', checkbox.checked);
+        }
+        
+        function renderWeakAreas() {
+            const container = document.getElementById('weakAreas');
+            container.innerHTML = '';
+            weakTopics.forEach(topic => {
+                const tag = document.createElement('div');
+                tag.className = 'weak-tag';
+                const isFlagged = localStorage.getItem(`weak_${topic}`) === 'true';
+                if (isFlagged) tag.classList.add('flagged');
+                tag.textContent = topic;
+                tag.onclick = () => toggleWeakArea(topic, tag);
+                container.appendChild(tag);
+            });
+        }
+
+        function toggleWeakArea(topic, element) {
+            const isFlagged = element.classList.toggle('flagged');
+            localStorage.setItem(`weak_${topic}`, isFlagged);
+        }
+
+        function resetProgress() {
+            if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        function showPhase(phase) {
+            const foundationDays = plans.foundation.length;
+            if (phase === 'foundation' && currentDayIndex >= foundationDays) {
+                currentDayIndex = 0;
+            } else if (phase === 'sprint' && currentDayIndex < foundationDays) {
+                currentDayIndex = foundationDays;
+            }
+            showDay(currentDayIndex);
+        }
+
+        // Initial setup
+        updateCountdown();
+        setInterval(updateCountdown, 60000);
+        renderDailyPlan(); // Renders all days first
+        renderWeakAreas();
+    </script>
+</body>
+</html>
